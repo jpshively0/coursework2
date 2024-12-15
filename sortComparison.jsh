@@ -8,11 +8,10 @@ int cardCompare(String card1, String card2){
 	
 
 //split both cards into number string and suit string
-	String num1 = card1.substring(0, (card1.length()/2));
-	String suit1 = card1.substring(card1.length()/2);
-
-	String num2 = card2.substring(0, (card2.length()/2));
-	String suit2 = card2.substring(card2.length()/2);
+String num1 = card1.substring(0, card1.length() - 1);
+        String suit1 = card1.substring(card1.length() - 1);
+        String num2 = card2.substring(0, card2.length() - 1);
+        String suit2 = card2.substring(card2.length() - 1);
 
 
 //convert number string to int 
@@ -113,26 +112,38 @@ ArrayList<String> bubbleSort(ArrayList<String> array){
 }
 
 
-
-/*
 ArrayList<String> mergeSort(ArrayList<String> array){
-  // TODO
-  
-  int z = array.size();
-  int n = z/2;
-  
-  
-  
-  return void;
-  
-  
-  
-  
-  
-  
-}
+   int size = array.size();
+        if (size <= 1) return array;
 
-*/
+        int mid = size / 2;
+        ArrayList<String> left = new ArrayList<>(array.subList(0, mid));
+        ArrayList<String> right = new ArrayList<>(array.subList(mid, size));
+
+        return merge(mergeSort(left), mergeSort(right));
+    }
+
+    ArrayList<String> merge(ArrayList<String> left, ArrayList<String> right) {
+        ArrayList<String> result = new ArrayList<>();
+        int i = 0, j = 0;
+
+        while (i < left.size() && j < right.size()) {
+            if (cardCompare(left.get(i), right.get(j)) <= 0) {
+                result.add(left.get(i++));
+            } else {
+                result.add(right.get(j++));
+            }
+        }
+
+        while (i < left.size()) result.add(left.get(i++));
+        while (j < right.size()) result.add(right.get(j++));
+
+        return result;
+    }
+
+
+
+
 
 long measureBubbleSort(String filename) throws IOException{
 
@@ -172,21 +183,16 @@ return time;
 }
 
 void sortComparison(String[] filenames) throws IOException{
-  // TODO
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  String outputPath = "C:/Users/jpshi/OneDrive/Desktop/Uni/IP/coursework2/sortComparison.csv";
+    try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputPath))) {
+        writer.write("Filename,BubbleSortTime,MergeSortTime\n");
+        for (String filename : filenames) {
+            long bubbleTime = measureBubbleSort(filename);
+            long mergeTime = measureMergeSort(filename);
+            writer.write(filename + "," + bubbleTime + "," + mergeTime + "\n");
+        }
+    }
+    System.out.println("Results written to " + outputPath);
+
   
 }
